@@ -44,5 +44,14 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            pkill -f '*.jar' || true
-            nohup java -jar /home/ec2-user/app/target/*.jar > app.log 2>&1 &
+            # Stop existing Java process
+            sudo pkill -f java || true
+
+            # Navigate to app directory
+            cd /home/ec2-user/app
+
+            # Find JAR file
+            JAR_FILE=$(ls *.jar | head -n 1)
+
+            # Start application
+            nohup java -jar $JAR_FILE > app.log 2>&1 &
